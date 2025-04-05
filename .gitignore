@@ -1,0 +1,15 @@
+# 忽略編譯過程產生的檔案
+*.log
+*.tmp
+
+# 忽略特定資料夾
+node_modules/
+dist/
+
+# 忽略操作系統特定的檔案
+.DS_Store
+Thumbs.db
+
+# 忽略 IDE 或編輯器的檔案
+.vscode/
+.idea/
