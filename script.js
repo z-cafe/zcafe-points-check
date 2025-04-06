@@ -1,5 +1,5 @@
-const pointUrl = 'https://AKfycbzx3t6ktbHZMUBGzGsKyfPnI3jyngSTA60NuoMnOlczJf4Eq_SckJp0eAbDaQEhIRNZdA/exec';
-const recordUrl = 'https://script.google.com/macros/s/AKfycbzIktMLmiiJlANmXjPE-up8EGNiUD1PwJbAFT-Ffr3iu0i-NAQ77SOIzTF7I0VTHYcCYA/exec'; 
+const pointUrl = 'https://script.google.com/macros/s/AKfycbzl7YLoeE0h2Oib2Ud2-UhTNomoggXk_OBKHX-kXP-ORfAlxyGH_VZClDR9eqoQTfWc/exec';
+const recordUrl = 'https://script.google.com/macros/s/AKfycbzIktMLmiiJlANmXjPE-up8EGNiUD1PwJbAFT-Ffr3iu0i-NAQ77SOIzTF7I0VTHYcCYA/exec';
 
 function checkAll() {
   const userInput = document.getElementById('userInput').value.trim();
@@ -15,58 +15,48 @@ function checkAll() {
   pointsDiv.innerHTML = '查詢中...';
   recordsDiv.innerHTML = '查詢中...';
 
-  // 會員點數查詢 (使用 fetch 並解析 JSON 回傳資料)
-  fetch(`${pointUrl}?name=${encodeURIComponent(userInput)}`)
-    .then(res => res.text())
-    .then(data => {
-      console.log("點數查詢回傳資料:", data);
-      try {
-        let obj = JSON.parse(data);
-        // 修改顯示格式：第一行顯示 姓名：，第二行顯示 會員點數：
-        pointsDiv.innerHTML = `<div class="points-box">
-          <p>姓名：${obj.name || "無"}</p>
-          <p>會員點數：${obj.point || "無"}</p>
-        </div>`;
-      } catch(e) {
-        console.error("JSON 解析錯誤:", e);
-        pointsDiv.innerHTML = '回傳資料解析錯誤';
-      }
-    })
-    .catch(err => {
-      console.error("fetch 錯誤:", err);
-      pointsDiv.innerHTML = '發生錯誤，請稍後再試';
-    });
+  // ✅ 點數查詢 - JSONP
+  const pointsCallback = "pointsCallback_" + Date.now();
+  const pointScript = document.createElement('script');
+  pointScript.src = `${pointUrl}?name=${encodeURIComponent(userInput)}&callback=${pointsCallback}`;
 
-  // 扣款紀錄查詢 (使用 JSONP)
-  const callbackName = "jsonpCallback_" + Date.now();
-  let script = document.createElement('script');
-  script.src = `${recordUrl}?name=${encodeURIComponent(userInput)}&callback=${callbackName}`;
+  window[pointsCallback] = function(obj) {
+    console.log("點數 JSONP 回傳:", obj);
+    pointsDiv.innerHTML = `<div class="points-box">
+      <p>姓名：${obj.name || "無"}</p>
+      <p>會員點數：${obj.point || "無"}</p>
+    </div>`;
+    if (pointScript.parentNode) document.body.removeChild(pointScript);
+    delete window[pointsCallback];
+  };
+  document.body.appendChild(pointScript);
 
-  window[callbackName] = function(data) {
-    console.log("JSONP callback invoked:", data);
+  // ✅ 扣款紀錄查詢 - JSONP
+  const recordCallback = "recordCallback_" + Date.now();
+  const recordScript = document.createElement('script');
+  recordScript.src = `${recordUrl}?name=${encodeURIComponent(userInput)}&callback=${recordCallback}`;
+
+  window[recordCallback] = function(data) {
+    console.log("紀錄 JSONP 回傳:", data);
     if (!data || data.length === 0) {
       recordsDiv.innerHTML = "查無扣款紀錄";
     } else {
       let html = `<div class="records-box">`;
       data.forEach(item => {
-        html += `<p>日期：${item.date ? item.date : "無"}</p>`;
-        html += `<p>扣款內容：${item.content ? item.content : "無"}</p>`;
-        html += `<p>扣款金額：${item.amount ? item.amount : "無"}</p>`;
-        html += `<p>點數餘額：${item.balance ? item.balance : "無"}</p>`;
+        html += `<p>日期：${item.date || "無"}</p>`;
+        html += `<p>扣款內容：${item.content || "無"}</p>`;
+        html += `<p>扣款金額：${item.amount || "無"}</p>`;
+        html += `<p>點數餘額：${item.balance || "無"}</p>`;
         html += `<hr/>`;
       });
       html += `</div>`;
       recordsDiv.innerHTML = html;
     }
-    if (script.parentNode) {
-      document.body.removeChild(script);
-    }
-    delete window[callbackName];
+    if (recordScript.parentNode) document.body.removeChild(recordScript);
+    delete window[recordCallback];
   };
-
-  document.body.appendChild(script);
-  console.log("JSONP 請求已發出，URL =", script.src);
+  document.body.appendChild(recordScript);
 }
 
-// 掛載全域，確保 HTML 中的 inline onclick 可以存取
+// 掛載全域
 window.checkAll = checkAll;
