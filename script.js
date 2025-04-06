@@ -1,4 +1,4 @@
-const pointUrl = 'https://script.google.com/macros/s/AKfycbzl7YLoeE0h2Oib2Ud2-UhTNomoggXk_OBKHX-kXP-ORfAlxyGH_VZClDR9eqoQTfWc/exec';
+const pointUrl = 'https://script.google.com/macros/s/AKfycbxDyITLxe9yRu2VCUxEGo_oGz4dfSQ-r-a0npFiiTUJ6cb15982impHEdfr9wzad_kMnA/exec';
 const recordUrl = 'https://script.google.com/macros/s/AKfycbzIktMLmiiJlANmXjPE-up8EGNiUD1PwJbAFT-Ffr3iu0i-NAQ77SOIzTF7I0VTHYcCYA/exec';
 
 function checkAll() {
