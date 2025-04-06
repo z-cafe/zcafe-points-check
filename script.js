@@ -34,6 +34,7 @@ function checkPoints() {
 
   resultDiv.innerHTML = '查詢中...';
 
+  // 點數查詢仍使用 fetch (後端若已正確設定 CORS 標頭)
   fetch(`${pointUrl}?name=${encodeURIComponent(name)}`)
     .then(res => res.text())
     .then(data => {
@@ -54,32 +55,38 @@ function checkRecords() {
 
   recordDiv.innerHTML = '查詢中...';
 
-  // 使用 JSONP 避免 CORS 問題
   const callbackName = "jsonpCallback_" + Date.now();
   
-  // 定義全域 callback 函式，接收 JSONP 回傳資料
+  // 建立 script 元素
+  let script = document.createElement('script');
+  script.src = `${recordUrl}?name=${encodeURIComponent(name)}&callback=${callbackName}`;
+  
+  // 註冊全域 callback 函式，用於接收 JSONP 回傳資料
   window[callbackName] = function(data) {
+    console.log("JSONP callback invoked:", data);
     if (!data || data.length === 0) {
       recordDiv.innerHTML = "查無資料";
     } else {
       let html = "";
       data.forEach(item => {
-        html += `
-          <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px;">
-            <p>日期：${item.date ? item.date : "無"}</p>
-            <p>扣款內容：${item.content ? item.content : "無"}</p>
-            <p>扣款金額：${item.amount ? item.amount : "無"}</p>
-            <p>點數餘額：${item.balance ? item.balance : "無"}</p>
-          </div>
-        `;
+        html += `<div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px;">`;
+        html += `<p>日期：${item.date ? item.date : "無"}</p>`;
+        html += `<p>扣款內容：${item.content ? item.content : "無"}</p>`;
+        html += `<p>扣款金額：${item.amount ? item.amount : "無"}</p>`;
+        html += `<p>點數餘額：${item.balance ? item.balance : "無"}</p>`;
+        html += `</div>`;
       });
       recordDiv.innerHTML = html;
     }
-    document.body.removeChild(script);
+    // 移除動態加入的 script 元素，清除 callback
+    if (script.parentNode) {
+      document.body.removeChild(script);
+    }
     delete window[callbackName];
   };
 
-  const script = document.createElement('script');
-  script.src = `${recordUrl}?name=${encodeURIComponent(name)}&callback=${callbackName}`;
+  // 附加 script 元素到文件中，發出 JSONP 請求
   document.body.appendChild(script);
+  console.log("JSONP 請求已發出，URL =", script.src);
 }
+
