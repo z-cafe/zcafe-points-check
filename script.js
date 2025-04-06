@@ -1,5 +1,5 @@
-const pointUrl = 'https://script.google.com/macros/s/AKfycbwRZjtQWPdlpd4lrDqd7aQl6eLp1745BWPJ5wkAcL8GtVqikXCDJYVfTQ5ivW5mQ1iFgg/exec';
-const recordUrl = 'https://script.google.com/macros/s/AKfycbysxu-dcrn17_DBJJ5Yc-0zSmPKKPs918hmsXXlBQRDC4LGj8SoEbGu264CZxZCIkZTBw/exec';
+const pointUrl = 'https://script.google.com/macros/s/AKfycbwRZjtQWPdlpd4lrDqd7aQl6eLp1745BWPJ5wkAcL8GtVqikXCDJYVfTQ5ivW5mQ1iFgg/exec'; 
+const recordUrl = 'https://script.google.com/macros/s/AKfycbwAeQVwZDNezHPXqWgg25-oLPds_sTBfYwp8FegWn0yd9JSIpylLtUFjyU5Y4FKDxxnbg/exec'; 
 
 function showPage(page) {
   const pointBtn = document.getElementById('pointBtn');
@@ -54,12 +54,18 @@ function checkRecords() {
 
   recordDiv.innerHTML = '查詢中...';
 
-  fetch(`${recordUrl}?name=${encodeURIComponent(name)}`)
-    .then(res => res.text())
-    .then(data => {
-      recordDiv.innerHTML = data;
-    })
-    .catch(err => {
-      recordDiv.innerHTML = '發生錯誤，請稍後再試';
-    });
+  // 動態產生唯一的 callback 函式名稱
+  const callbackName = "jsonpCallback_" + Date.now();
+
+  // 定義全域 callback 函式，當 JSONP 回傳時會被呼叫
+  window[callbackName] = function(data) {
+    recordDiv.innerHTML = JSON.stringify(data);
+    document.body.removeChild(script);
+    delete window[callbackName];
+  };
+
+  // 新增一個 script 標籤來請求 JSONP 資料
+  const script = document.createElement('script');
+  script.src = `${recordUrl}?name=${encodeURIComponent(name)}&callback=${callbackName}`;
+  document.body.appendChild(script);
 }
