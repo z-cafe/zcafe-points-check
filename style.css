@@ -56,6 +56,7 @@ button:hover {
   border: 2px solid #fff;
   font-size: 32px;
   max-width: 300px;
+  text-align: left;
 }
 
 /* 扣款紀錄區塊 */

@@ -15,26 +15,29 @@ function checkAll() {
   pointsDiv.innerHTML = '查詢中...';
   recordsDiv.innerHTML = '查詢中...';
 
-  // 會員點數查詢（使用 fetch 並解析 JSON 回傳資料）
+  // 會員點數查詢 (使用 fetch 並解析 JSON 回傳資料)
   fetch(`${pointUrl}?name=${encodeURIComponent(userInput)}`)
     .then(res => res.text())
     .then(data => {
+      console.log("點數查詢回傳資料:", data);
       try {
         let obj = JSON.parse(data);
-        // 以中文方式上下排列顯示會員姓名與點數
+        // 修改顯示格式：第一行顯示 姓名：，第二行顯示 會員點數：
         pointsDiv.innerHTML = `<div class="points-box">
-          <p>會員姓名：${obj.name || "無"}</p>
+          <p>姓名：${obj.name || "無"}</p>
           <p>會員點數：${obj.point || "無"}</p>
         </div>`;
       } catch(e) {
+        console.error("JSON 解析錯誤:", e);
         pointsDiv.innerHTML = '回傳資料解析錯誤';
       }
     })
     .catch(err => {
+      console.error("fetch 錯誤:", err);
       pointsDiv.innerHTML = '發生錯誤，請稍後再試';
     });
 
-  // 扣款紀錄查詢（使用 JSONP）
+  // 扣款紀錄查詢 (使用 JSONP)
   const callbackName = "jsonpCallback_" + Date.now();
   let script = document.createElement('script');
   script.src = `${recordUrl}?name=${encodeURIComponent(userInput)}&callback=${callbackName}`;
@@ -65,5 +68,5 @@ function checkAll() {
   console.log("JSONP 請求已發出，URL =", script.src);
 }
 
-// 掛載全域（以確保 HTML 中的 inline onclick 可以存取）
+// 掛載全域，確保 HTML 中的 inline onclick 可以存取
 window.checkAll = checkAll;
