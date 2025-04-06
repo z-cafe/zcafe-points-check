@@ -24,8 +24,8 @@ function checkAll() {
   window[pointsCallback] = function(obj) {
     console.log("點數 JSONP 回傳:", obj);
     pointsDiv.innerHTML = `<div class="points-box">
-      <p>👤 姓名：${obj.name || "無"}</p>
-      <p>⭐ 會員點數：${obj.point || "無"}</p>
+      <p>姓名：${obj.name || "無"}</p>
+      <p>會員點數：${obj.point || "無"}</p>
     </div>`;
     if (pointScript.parentNode) document.body.removeChild(pointScript);
     delete window[pointsCallback];
@@ -44,10 +44,10 @@ function checkAll() {
     } else {
       let html = `<div class="records-box">`;
       data.forEach(item => {
-        html += `<p>📅 日期：${item.date || "無"}</p>`;
-        html += `<p>📝 扣款內容：${item.content || "無"}</p>`;
-        html += `<p>💸 扣款金額：${item.amount || "無"}</p>`;
-        html += `<p>💰 點數餘額：${item.balance || "無"}</p>`;
+        html += `<p>日期：${item.date || "無"}</p>`;
+        html += `<p>扣款內容：${item.content || "無"}</p>`;
+        html += `<p>扣款金額：${item.amount || "無"}</p>`;
+        html += `<p>點數餘額：${item.balance || "無"}</p>`;
         html += `<hr/>`;
       });
       html += `</div>`;
