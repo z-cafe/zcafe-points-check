@@ -34,6 +34,7 @@ function checkPoints() {
 
   resultDiv.innerHTML = '查詢中...';
 
+  // 點數查詢仍使用 fetch (後端已正確設定 CORS 標頭)
   fetch(`${pointUrl}?name=${encodeURIComponent(name)}`)
     .then(res => res.text())
     .then(data => {
@@ -54,17 +55,16 @@ function checkRecords() {
 
   recordDiv.innerHTML = '查詢中...';
 
-  // 動態產生唯一的 callback 函式名稱
+  // 使用 JSONP 避免 CORS 問題
   const callbackName = "jsonpCallback_" + Date.now();
-
-  // 定義全域 callback 函式，當 JSONP 回傳時會被呼叫
+  
+  // 定義全域 callback 函式，接收 JSONP 回傳資料
   window[callbackName] = function(data) {
     recordDiv.innerHTML = JSON.stringify(data);
     document.body.removeChild(script);
     delete window[callbackName];
   };
 
-  // 新增一個 script 標籤來請求 JSONP 資料
   const script = document.createElement('script');
   script.src = `${recordUrl}?name=${encodeURIComponent(name)}&callback=${callbackName}`;
   document.body.appendChild(script);
