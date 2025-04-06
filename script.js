@@ -1,5 +1,5 @@
 const pointUrl = 'https://script.google.com/macros/s/AKfycbwRZjtQWPdlpd4lrDqd7aQl6eLp1745BWPJ5wkAcL8GtVqikXCDJYVfTQ5ivW5mQ1iFgg/exec'; 
-const recordUrl = 'https://script.google.com/AKfycbx6CRp_9mkwicQie621Cv4NRT1AigjaDrcVS7u_wOkWxBIWJhmP2oaIdup6_BerRwBF/exec'; 
+const recordUrl = 'https://script.google.com/macros/s/AKfycbx6CRp_9mkwicQie621Cv4NRT1AigjaDrcVS7u_wOkWxBIWJhmP2oaIdup6_BerRwBF/exec'; 
 
 function showPage(page) {
   const pointBtn = document.getElementById('pointBtn');
