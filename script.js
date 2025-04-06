@@ -60,7 +60,22 @@ function checkRecords() {
   
   // 定義全域 callback 函式，接收 JSONP 回傳資料
   window[callbackName] = function(data) {
-    recordDiv.innerHTML = JSON.stringify(data);
+    if (!data || data.length === 0) {
+      recordDiv.innerHTML = "查無資料";
+    } else {
+      let html = '<table border="1" cellspacing="0" cellpadding="5">';
+      html += '<tr><th>日期</th><th>扣款內容</th><th>扣款金額</th><th>點數餘額</th></tr>';
+      for (let i = 0; i < data.length; i++) {
+         html += '<tr>';
+         html += `<td>${data[i].date}</td>`;
+         html += `<td>${data[i].content}</td>`;
+         html += `<td>${data[i].amount}</td>`;
+         html += `<td>${data[i].balance}</td>`;
+         html += '</tr>';
+      }
+      html += '</table>';
+      recordDiv.innerHTML = html;
+    }
     document.body.removeChild(script);
     delete window[callbackName];
   };
