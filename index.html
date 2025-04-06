@@ -1,146 +1,23 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Z Café 點數查詢</title>
-  <style>
-    body {
-      font-family: "Noto Sans TC", sans-serif;
-      background-color: #f8f9fa;
-      padding: 2rem;
-      color: #333;
-    }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #6c5ce7;
-      margin-bottom: 1.5rem;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-    }
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      background-color: #6c5ce7;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #5a4cd1;
-    }
-    .points-box, .records-box {
-      background-color: #f1f3f5;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-    }
-    .loader {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      border: 3px solid #ccc;
-      border-top: 3px solid #6c5ce7;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>z-cafe 點數查詢系統</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Z Café 點數查詢</h1>
+    <img src="logo003.jpg" alt="zcafe logo" class="logo" />
+    <h1>z-cafe 點數查詢系統</h1>
+    <!-- 單一輸入欄位 -->
     <input type="text" id="userInput" placeholder="請輸入姓名、電話或 LINE ID" />
     <button onclick="checkAll()">查詢</button>
-    <div id="pointsResult"></div>
-    <div id="recordsResult"></div>
+    <!-- 顯示會員點數的區塊 -->
+    <div id="pointsResult" class="result-area"></div>
+    <!-- 顯示扣款紀錄的區塊 -->
+    <div id="recordsResult" class="result-area"></div>
   </div>
-
-  <script>
-    const pointUrl = 'https://script.google.com/macros/s/AKfycbxDyITLxe9yRu2VCUxEGo_oGz4dfSQ-r-a0npFiiTUJ6cb15982impHEdfr9wzad_kMnA/exec';
-    const recordUrl = 'https://script.google.com/macros/s/AKfycbzIktMLmiiJlANmXjPE-up8EGNiUD1PwJbAFT-Ffr3iu0i-NAQ77SOIzTF7I0VTHYcCYA/exec';
-
-    function showLoading(target) {
-      target.innerHTML = '查詢中 <span class="loader"></span>';
-    }
-
-    function checkAll() {
-      const userInput = document.getElementById('userInput').value.trim();
-      const pointsDiv = document.getElementById('pointsResult');
-      const recordsDiv = document.getElementById('recordsResult');
-
-      if (!userInput) {
-        pointsDiv.innerHTML = '❗ 請輸入姓名、電話或 LINE ID';
-        recordsDiv.innerHTML = '';
-        return;
-      }
-
-      showLoading(pointsDiv);
-      showLoading(recordsDiv);
-
-      // 點數查詢
-      const pointsCallback = "pointsCallback_" + Date.now();
-      const pointScript = document.createElement('script');
-      pointScript.src = `${pointUrl}?name=${encodeURIComponent(userInput)}&callback=${pointsCallback}`;
-
-      window[pointsCallback] = function(obj) {
-        pointsDiv.innerHTML = `<div class="points-box">
-          <p>👤 姓名：${obj.name || "無"}</p>
-          <p>⭐ 會員點數：${obj.point || "無"}</p>
-        </div>`;
-        if (pointScript.parentNode) document.body.removeChild(pointScript);
-        delete window[pointsCallback];
-      };
-
-      document.body.appendChild(pointScript);
-
-      // 扣款紀錄查詢
-      const recordCallback = "recordCallback_" + Date.now();
-      const recordScript = document.createElement('script');
-      recordScript.src = `${recordUrl}?name=${encodeURIComponent(userInput)}&callback=${recordCallback}`;
-
-      window[recordCallback] = function(data) {
-        if (!data || data.length === 0) {
-          recordsDiv.innerHTML = "查無扣款紀錄";
-        } else {
-          let html = `<div class="records-box">`;
-          data.forEach(item => {
-            html += `<p>📅 日期：${item.date || "無"}</p>`;
-            html += `<p>📝 扣款內容：${item.content || "無"}</p>`;
-            html += `<p>💸 扣款金額：${item.amount || "無"}</p>`;
-            html += `<p>💰 點數餘額：${item.balance || "無"}</p>`;
-            html += `<hr/>`;
-          });
-          html += `</div>`;
-          recordsDiv.innerHTML = html;
-        }
-        if (recordScript.parentNode) document.body.removeChild(recordScript);
-        delete window[recordCallback];
-      };
-
-      document.body.appendChild(recordScript);
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
