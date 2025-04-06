@@ -10,25 +10,14 @@
   <div class="container">
     <img src="logo003.jpg" alt="zcafe logo" class="logo" />
     <h1>zcafe 查詢系統</h1>
-
-    <div class="button-group">
-      <button id="pointBtn" onclick="showPage('points')">查詢點數</button>
-      <button id="recordBtn" onclick="showPage('records')">查詢入扣款紀錄</button>
-    </div>
-
-    <div id="pointsPage" class="page">
-      <input type="text" id="nameInput" placeholder="請輸入姓名或LINE ID" />
-      <button onclick="checkPoints()">查詢</button>
-      <div id="result" class="result-area"></div>
-    </div>
-
-    <div id="recordsPage" class="page" style="display: none;">
-      <input type="text" id="recordInput" placeholder="請輸入姓名或LINE ID" />
-      <button onclick="checkRecords()">查詢</button>
-      <div id="recordResult" class="result-area"></div>
-    </div>
+    <!-- 單一輸入欄位 -->
+    <input type="text" id="userInput" placeholder="請輸入姓名、電話或 LINE ID" />
+    <button onclick="checkAll()">查詢</button>
+    <!-- 顯示會員點數的區塊 -->
+    <div id="pointsResult" class="result-area"></div>
+    <!-- 顯示入扣款紀錄的區塊 -->
+    <div id="recordsResult" class="result-area"></div>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>

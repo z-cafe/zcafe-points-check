@@ -37,7 +37,7 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin: 5px;
+  margin-bottom: 20px;
   transition: background-color 0.3s ease;
 }
 
@@ -45,15 +45,34 @@ button:hover {
   background-color: #ddd;
 }
 
-.button-group {
-  margin-bottom: 20px;
-}
-
 .result-area {
   margin-top: 15px;
 }
 
-.loading {
-  font-style: italic;
-  color: #ccc;
+/* 會員點數大格子 */
+.points-box {
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #fff;
+  font-size: 32px;
+  max-width: 300px;
+}
+
+/* 扣款紀錄區塊 */
+.records-box {
+  margin: 20px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+  max-width: 500px;
+}
+
+.records-box p {
+  margin: 5px 0;
+}
+
+.records-box hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 10px 0;
 }
