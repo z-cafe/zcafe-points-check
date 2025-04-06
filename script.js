@@ -34,7 +34,6 @@ function checkPoints() {
 
   resultDiv.innerHTML = '查詢中...';
 
-  // 點數查詢仍使用 fetch (後端若已正確設定 CORS 標頭)
   fetch(`${pointUrl}?name=${encodeURIComponent(name)}`)
     .then(res => res.text())
     .then(data => {
@@ -56,12 +55,9 @@ function checkRecords() {
   recordDiv.innerHTML = '查詢中...';
 
   const callbackName = "jsonpCallback_" + Date.now();
-  
-  // 建立 script 元素
   let script = document.createElement('script');
   script.src = `${recordUrl}?name=${encodeURIComponent(name)}&callback=${callbackName}`;
-  
-  // 註冊全域 callback 函式，用於接收 JSONP 回傳資料
+
   window[callbackName] = function(data) {
     console.log("JSONP callback invoked:", data);
     if (!data || data.length === 0) {
@@ -78,14 +74,12 @@ function checkRecords() {
       });
       recordDiv.innerHTML = html;
     }
-    // 移除動態加入的 script 元素，清除 callback
     if (script.parentNode) {
       document.body.removeChild(script);
     }
     delete window[callbackName];
   };
 
-  // 附加 script 元素到文件中，發出 JSONP 請求
   document.body.appendChild(script);
   console.log("JSONP 請求已發出，URL =", script.src);
 }
