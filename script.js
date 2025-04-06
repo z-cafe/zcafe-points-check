@@ -69,4 +69,28 @@ function checkRecords() {
     } else {
       let html = "";
       data.forEach(item => {
-        html +=
+        html += `<div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px;">`;
+        html += `<p>日期：${item.date ? item.date : "無"}</p>`;
+        html += `<p>扣款內容：${item.content ? item.content : "無"}</p>`;
+        html += `<p>扣款金額：${item.amount ? item.amount : "無"}</p>`;
+        html += `<p>點數餘額：${item.balance ? item.balance : "無"}</p>`;
+        html += `</div>`;
+      });
+      recordDiv.innerHTML = html;
+    }
+    // 移除動態加入的 script 元素，清除 callback
+    if (script.parentNode) {
+      document.body.removeChild(script);
+    }
+    delete window[callbackName];
+  };
+
+  // 附加 script 元素到文件中，發出 JSONP 請求
+  document.body.appendChild(script);
+  console.log("JSONP 請求已發出，URL =", script.src);
+}
+
+// 將所有函式掛載到全域，確保 HTML 中的 inline onclick 可以存取
+window.showPage = showPage;
+window.checkPoints = checkPoints;
+window.checkRecords = checkRecords;
